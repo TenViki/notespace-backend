@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FileEntity } from "src/entities/file.entity";
 import { Repository } from "typeorm";
@@ -41,7 +41,7 @@ export class FilesService {
     const file = await this.repo.findOne(id);
 
     if (!file) {
-      throw new Error("File not found");
+      throw new NotFoundException("File not found");
     }
 
     const filePath = `uploads/${file.filename}`;
@@ -49,7 +49,7 @@ export class FilesService {
     try {
       await fs.access(filePath);
     } catch (error) {
-      throw new Error("File not found");
+      throw new NotFoundException("File not found");
     }
 
     return filePath;
