@@ -17,7 +17,7 @@ export class FilesService {
       let extension = file.originalname.split(".").pop();
 
       if (file.mimetype.includes("image")) {
-        buffer = await sharp(buffer).jpeg({ quality: 75 }).toBuffer();
+        buffer = await sharp(buffer).jpeg({ quality: 75 }).withMetadata().toBuffer();
         extension = "jpg";
       }
 
