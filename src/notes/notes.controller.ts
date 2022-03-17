@@ -15,4 +15,9 @@ export class NotesController {
   async getNotesForMonth(@Param("year") year: string, @Param("month") month: string) {
     return this.noteService.getNotesForMonth(+year, +month);
   }
+
+  @Get("/:id")
+  async getNote(@Param("id") id: string) {
+    return this.noteService.getNote(id);
+  }
 }

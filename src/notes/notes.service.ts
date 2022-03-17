@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FileEntity } from "src/entities/file.entity";
 import { Note } from "src/entities/note.entity";
@@ -45,6 +45,12 @@ export class NotesService {
 
   getDateMonth(year: number, month: number) {
     return new Date(year, +month - 1, 1);
+  }
+
+  async getNote(id: string) {
+    const note = this.noteRepo.findOne(id, { relations: ["tag", "files"] });
+    if (!note) throw new NotFoundException(`Note with id ${id} not found`);
+    return note;
   }
 
   async createTag(label: string) {
