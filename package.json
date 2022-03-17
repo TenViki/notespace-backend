@@ -15,14 +15,15 @@
     "start:debug": "cross-env NODE_ENV=developmentnest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "test": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json --detectOpenHandles --verbose",
-    "db:start": "docker start db_postgres_1 db_redis_1",
-    "db:stop": "docker stop db_postgres_1 db_redis_1",
-    "db:rm": "docker rm db_postgres_1 db_redis_1",
+    "db:start": "docker start notespace-backend_postgres_1",
+    "db:stop": "docker stop notespace-backend_postgres_1",
+    "db:rm": "docker rm notespace-backend_postgres_1",
     "db:create": "docker-compose -f db.yml up -d",
-    "db:reset": "docker rm -f db_postgres_1 db_redis_1 && docker-compose -f db.yml up -d"
+    "db:reset": "docker rm -f notespace-backend_postgres_1 && docker-compose -f db.yml up -d"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^8.0.3",
