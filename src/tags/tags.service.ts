@@ -12,6 +12,10 @@ export class TagsService {
     return this.repo.save({ name: label.toLowerCase(), color: color.finalColor });
   }
 
+  async getTags() {
+    return this.repo.find();
+  }
+
   async getTag(label: string) {
     let tag = await this.repo.findOne({ where: { name: label.toLowerCase() } });
     if (!tag) tag = await this.createTag(label);
