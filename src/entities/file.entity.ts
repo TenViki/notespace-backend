@@ -11,4 +11,7 @@ export class FileEntity {
 
   @ManyToOne(() => Note, (note) => note.files)
   note: Note;
+
+  @Column()
+  originalname: string;
 }
