@@ -16,7 +16,7 @@ export class NotesService {
   ) {}
 
   async createNote(note: NewNoteDto) {
-    let tag = await this.tagRepo.findOne({ where: { label: note.tag.toLowerCase() } });
+    let tag = await this.tagRepo.findOne({ where: { name: note.tag.toLowerCase() } });
     console.log("there 1");
     if (!tag) tag = await this.createTag(note.tag);
     console.log("there 2");
@@ -41,7 +41,7 @@ export class NotesService {
     console.log("there 3");
     const color = this.getRandomColor();
     console.log("there 4");
-    return this.tagRepo.save({ label: label.toLowerCase(), color: color.finalColor });
+    return this.tagRepo.save({ name: label.toLowerCase(), color: color.finalColor });
   }
 
   getDateDay(date: Date) {
@@ -60,7 +60,7 @@ export class NotesService {
     s = (v - 10) / 100;
     v = v / 100;
 
-    var r, g, b, i, f, p, q, t;
+    let r, g, b, i, f, p, q, t;
     i = Math.floor(h * 6);
     f = h * 6 - i;
     p = v * (1 - s);
