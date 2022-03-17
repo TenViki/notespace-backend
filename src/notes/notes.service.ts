@@ -17,9 +17,7 @@ export class NotesService {
 
   async createNote(note: NewNoteDto) {
     let tag = await this.tagRepo.findOne({ where: { name: note.tag.toLowerCase() } });
-    console.log("there 1");
     if (!tag) tag = await this.createTag(note.tag);
-    console.log("there 2");
 
     const files: FileEntity[] = [];
     for (const fileId of note.files) {
@@ -38,9 +36,7 @@ export class NotesService {
   }
 
   async createTag(label: string) {
-    console.log("there 3");
     const color = this.getRandomColor();
-    console.log("there 4");
     return this.tagRepo.save({ name: label.toLowerCase(), color: color.finalColor });
   }
 
