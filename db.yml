@@ -1,4 +1,4 @@
-version: '3.3'
+version: "3.3"
 
 services:
   postgres:
@@ -6,9 +6,9 @@ services:
     restart: on-failure
 
     environment:
-      POSTGRES_USER: 'nestspace'
-      POSTGRES_PASSWORD: 'nestspace'
-      POSTGRES_DB: 'nestspace'
+      POSTGRES_USER: "notespace"
+      POSTGRES_PASSWORD: "notespace"
+      POSTGRES_DB: "notespace"
 
     ports:
-      - '5432:5432'
+      - "5432:5432"
