@@ -35,6 +35,17 @@ export class NotesService {
     });
   }
 
+  async getNotesForMonth(month: number, year: number) {
+    const notes = await this.noteRepo.find({
+      where: { forDay: this.getDateMonth(month, year) },
+      relations: ["tag"],
+    });
+  }
+
+  getDateMonth(month: number, year: number) {
+    return new Date(year, month - 1, 1);
+  }
+
   async createTag(label: string) {
     const color = this.getRandomColor();
     return this.tagRepo.save({ name: label.toLowerCase(), color: color.finalColor });
