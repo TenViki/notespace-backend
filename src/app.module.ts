@@ -1,10 +1,13 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { APP_PIPE } from "@nestjs/core";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { FileEntity } from "./entities/file.entity";
 import { Note } from "./entities/note.entity";
 import { Tag } from "./entities/tag.entity";
 import { FilesModule } from "./files/files.module";
+import { NotesModule } from "./notes/notes.module";
+import { ValidationPipeCheck } from "./validation/validation.pipe";
 
 @Module({
   imports: [
@@ -22,8 +25,14 @@ import { FilesModule } from "./files/files.module";
       synchronize: process.env.NODE_ENV !== "production",
     }),
     FilesModule,
+    NotesModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipeCheck({ whitelist: true, stopAtFirstError: true }),
+    },
+  ],
 })
 export class AppModule {}
