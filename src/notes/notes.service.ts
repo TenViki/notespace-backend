@@ -4,8 +4,9 @@ import { FileEntity } from "src/entities/file.entity";
 import { Note } from "src/entities/note.entity";
 import { Tag } from "src/entities/tag.entity";
 import { FilesService } from "src/files/files.service";
-import { Repository } from "typeorm";
+import { Between, Repository } from "typeorm";
 import { NewNoteDto } from "./new-note.dto";
+import {} from "typeorm";
 
 @Injectable()
 export class NotesService {
@@ -35,15 +36,15 @@ export class NotesService {
     });
   }
 
-  async getNotesForMonth(month: number, year: number) {
-    const notes = await this.noteRepo.find({
-      where: { forDay: this.getDateMonth(month, year) },
+  async getNotesForMonth(year: number, month: number) {
+    return this.noteRepo.find({
+      where: { forDay: Between(this.getDateMonth(year, month).toISOString(), this.getDateMonth(year, month + 1).toISOString()) },
       relations: ["tag"],
     });
   }
 
-  getDateMonth(month: number, year: number) {
-    return new Date(year, month - 1, 1);
+  getDateMonth(year: number, month: number) {
+    return new Date(year, +month - 1, 1);
   }
 
   async createTag(label: string) {

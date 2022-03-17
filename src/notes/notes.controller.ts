@@ -12,7 +12,7 @@ export class NotesController {
   }
 
   @Get("/:year/:month")
-  async getNotesForMonth(@Param("year") year: number, @Param("month") month: number) {
-    return this.noteService.getNotesForMonth(year, month);
+  async getNotesForMonth(@Param("year") year: string, @Param("month") month: string) {
+    return this.noteService.getNotesForMonth(+year, +month);
   }
 }
