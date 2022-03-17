@@ -7,18 +7,18 @@ import { FilesService } from "src/files/files.service";
 import { Between, Repository } from "typeorm";
 import { NewNoteDto } from "./new-note.dto";
 import {} from "typeorm";
+import { TagsService } from "src/tags/tags.service";
 
 @Injectable()
 export class NotesService {
   constructor(
-    @InjectRepository(Tag) private tagRepo: Repository<Tag>,
-    @InjectRepository(Note) private noteRepo: Repository<Note>,
+    @InjectRepository(Note) private repo: Repository<Note>,
+    private tagsService: TagsService,
     private filesService: FilesService,
   ) {}
 
   async createNote(note: NewNoteDto) {
-    let tag = await this.tagRepo.findOne({ where: { name: note.tag.toLowerCase() } });
-    if (!tag) tag = await this.createTag(note.tag);
+    const tag = await this.tagsService.getTag(note.tag);
 
     const files: FileEntity[] = [];
     for (const fileId of note.files) {
@@ -26,7 +26,7 @@ export class NotesService {
       files.push(file);
     }
 
-    return this.noteRepo.save({
+    return this.repo.save({
       tag,
       label: note.label,
       content: note.content,
@@ -37,7 +37,7 @@ export class NotesService {
   }
 
   async getNotesForMonth(year: number, month: number) {
-    return this.noteRepo.find({
+    return this.repo.find({
       where: { forDay: Between(this.getDateMonth(year, month).toISOString(), this.getDateMonth(year, month + 1).toISOString()) },
       relations: ["tag"],
     });
@@ -48,72 +48,13 @@ export class NotesService {
   }
 
   async getNote(id: string) {
-    const note = this.noteRepo.findOne(id, { relations: ["tag", "files"] });
+    const note = this.repo.findOne(id, { relations: ["tag", "files"] });
     if (!note) throw new NotFoundException(`Note with id ${id} not found`);
     return note;
-  }
-
-  async createTag(label: string) {
-    const color = this.getRandomColor();
-    return this.tagRepo.save({ name: label.toLowerCase(), color: color.finalColor });
   }
 
   getDateDay(date: Date) {
     // Strip out the time portion of the date
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  }
-
-  getRandomColor(h?: number) {
-    const PHI = 0.618033988749895;
-    let s, v, hue;
-    if (h === undefined) {
-      hue = Math.floor(Math.random() * (360 - 0 + 1) + 0) / 360;
-      h = (hue + hue / PHI) % 360;
-    } else h /= 360;
-    v = Math.floor(Math.random() * (100 - 20 + 1) + 20);
-    s = (v - 10) / 100;
-    v = v / 100;
-
-    let r, g, b, i, f, p, q, t;
-    i = Math.floor(h * 6);
-    f = h * 6 - i;
-    p = v * (1 - s);
-    q = v * (1 - f * s);
-    t = v * (1 - (1 - f) * s);
-    switch (i % 6) {
-      case 0:
-        (r = v), (g = t), (b = p);
-        break;
-      case 1:
-        (r = q), (g = v), (b = p);
-        break;
-      case 2:
-        (r = p), (g = v), (b = t);
-        break;
-      case 3:
-        (r = p), (g = q), (b = v);
-        break;
-      case 4:
-        (r = t), (g = p), (b = v);
-        break;
-      case 5:
-        (r = v), (g = p), (b = q);
-        break;
-    }
-    r = Math.round(r * 255);
-    g = Math.round(g * 255);
-    b = Math.round(b * 255);
-
-    var finalColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-
-    return {
-      h,
-      s,
-      v,
-      r,
-      g,
-      b,
-      finalColor,
-    };
   }
 }
