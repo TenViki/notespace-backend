@@ -58,4 +58,14 @@ export class FilesService {
 
     return file;
   }
+
+  async getFileById(id: string) {
+    const file = await this.repo.findOne({ where: { id } });
+
+    if (!file) {
+      throw new NotFoundException("File not found");
+    }
+
+    return file;
+  }
 }
