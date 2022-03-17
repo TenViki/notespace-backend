@@ -8,6 +8,7 @@ import { Tag } from "./entities/tag.entity";
 import { FilesModule } from "./files/files.module";
 import { NotesModule } from "./notes/notes.module";
 import { ValidationPipeCheck } from "./validation/validation.pipe";
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ValidationPipeCheck } from "./validation/validation.pipe";
     }),
     FilesModule,
     NotesModule,
+    TagsModule,
   ],
   controllers: [],
   providers: [
