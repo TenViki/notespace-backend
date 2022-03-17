@@ -15,6 +15,7 @@ export class FilesService {
     for (const file of files) {
       let buffer = file.buffer;
       let extension = file.originalname.split(".").pop();
+      let mimetype = file.mimetype;
 
       if (file.mimetype.includes("image")) {
         buffer = await sharp(buffer)
@@ -22,11 +23,13 @@ export class FilesService {
           .withMetadata()
           .toBuffer();
         extension = "jpg";
+        mimetype = "image/jpeg";
       }
 
       const fileEntity = await this.repo.save({
         originalname: `${file.originalname.split("." + extension)[0]}.${extension}`,
         filename: `${file.filename}.${extension}`,
+        mimetype,
       });
 
       const filePath = `uploads/${fileEntity.id}.${extension}`;
@@ -47,16 +50,12 @@ export class FilesService {
       throw new NotFoundException("File not found");
     }
 
-    const filePath = `uploads/${file.filename}`;
-
-    console.log(filePath);
-
     try {
-      await fs.access(filePath);
+      await fs.access(`uploads/${file.filename}`);
     } catch (error) {
       throw new InternalServerErrorException("Error reading file");
     }
 
-    return filePath;
+    return file;
   }
 }

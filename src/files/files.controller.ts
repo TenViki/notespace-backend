@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Post, StreamableFile, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Param, Post, Response, StreamableFile, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { FilesService } from "./files.service";
 import { createReadStream } from "fs";
+import { Response as Res } from "express";
 
 @Controller("files")
 export class FilesController {
@@ -14,9 +15,14 @@ export class FilesController {
   }
 
   @Get("/:id")
-  async getFile(@Param("id") id: string) {
-    const filepath = await this.filesService.getFile(id);
+  async getFile(@Param("id") id: string, @Response({ passthrough: true }) res: Res) {
+    const file = await this.filesService.getFile(id);
 
-    return new StreamableFile(createReadStream(filepath));
+    res.set({
+      "Content-Type": file.mimetype,
+      "Content-Disposition": `inline; filename="${file.originalname}"`,
+    });
+
+    return new StreamableFile(createReadStream(`uploads/${file.filename}`));
   }
 }

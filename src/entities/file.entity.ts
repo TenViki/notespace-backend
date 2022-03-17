@@ -14,4 +14,7 @@ export class FileEntity {
 
   @Column()
   originalname: string;
+
+  @Column()
+  mimetype: string;
 }
