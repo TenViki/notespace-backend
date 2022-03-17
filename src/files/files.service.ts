@@ -36,4 +36,22 @@ export class FilesService {
 
     return createdFiles;
   }
+
+  async getFile(id: string) {
+    const file = await this.repo.findOne(id);
+
+    if (!file) {
+      throw new Error("File not found");
+    }
+
+    const filePath = `uploads/${file.filename}`;
+
+    try {
+      await fs.access(filePath);
+    } catch (error) {
+      throw new Error("File not found");
+    }
+
+    return filePath;
+  }
 }
