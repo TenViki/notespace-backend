@@ -25,7 +25,7 @@ export class FilesService {
       }
 
       const fileEntity = await this.repo.save({
-        filename: `${file.originalname}.${extension}`,
+        filename: `${file.originalname.split("." + extension)[0]}.${extension}`,
       });
 
       const filePath = `uploads/${fileEntity.id}.${extension}`;
